@@ -14,13 +14,15 @@ class AddEditComponent extends Component {
             fields: {
                 name: '',
                 description: '',
-                price: ''
+                price: '',
+                img_url: ''
             },
             errors: {}
         }
         this.onSubmit = this.onSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
+    file_obj = new FormData()
 
     static get contextTypes() {
         return {
@@ -60,9 +62,17 @@ class AddEditComponent extends Component {
 
     handleChange(event) {
         const fieldName = event.target.name;
-        let fields = this.state.fields;
-        fields[fieldName] = event.target.value;
-        this.setState({ fields });
+        const fields = this.state.fields;
+        if (fieldName === 'img_url') {
+            this.file_obj = new FormData();
+            this.file_obj.append('filename', event.target.value);
+            this.file_obj.append('file', event.target.files[0]);
+            fields[fieldName] = event.target.value;
+            this.setState({ fields });
+        } else {
+            fields[fieldName] = event.target.value;
+            this.setState({ fields });
+        }
     }
 
     getProduct(id) {
@@ -98,20 +108,34 @@ class AddEditComponent extends Component {
         this.props.actions.updateProduct(updatedProduct, this.state.selectedProductID);
     }
 
+    getImageName = (imgurl) => {
+        if (imgurl) {
+            return imgurl.split('\\').pop().split('/').pop();
+        }
+        return ''
+    }
+
     addNewItem() {
         const newProduct = {
             name: this.state.fields.name,
             description: this.state.fields.description,
             price: parseInt(this.state.fields.price),
-            img_url: "images/building.png"
+            img_url: this.getImageName(this.state.fields.img_url)
         };
-        this.props.actions.createProduct(newProduct)
+        if (newProduct.img_url) {
+            this.props.actions.createProductImage(this.file_obj).then((response) => {
+                if (response)
+                    this.props.actions.createProduct(newProduct)
+            })
+        } else {
+            this.props.actions.createProduct(newProduct)
+        }
     }
     render() {
         return (
             <div className="row">
                 <div className="col-lg-12">
-                    <form className="add-edit-form" onSubmit={this.onSubmit} ref={form => (this.formEl = form)}>
+                    <form className="add-edit-form" onSubmit={this.onSubmit} ref={form => (this.formEl = form)} >
                         <div className="form-group">
                             <label htmlFor="name">Product Name</label>
                             <input type="text" className="form-control" autoComplete="off" placeholder="Name" name="name" onChange={this.handleChange} value={this.state.fields["name"]} />
@@ -125,6 +149,10 @@ class AddEditComponent extends Component {
                             <label htmlFor="price">Price</label>
                             <input type="number" className="form-control" autoComplete="off" placeholder="Price" onChange={this.handleChange} name="price" value={this.state.fields["price"]} />
                             <span style={{ color: "red" }}>{this.state.errors["price"]}</span>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="price">Product Image</label><br />
+                            <input type="file" placeholder="Product Image" onChange={this.handleChange} name="img_url" />
                         </div>
                         <button type="submit" className="btn btn-success">Submit</button>
                         <button type="button" className="btn btn-info ml-3"><Link to={'/productList'}>Back</Link></button>

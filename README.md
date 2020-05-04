@@ -1,6 +1,6 @@
 # React Python MongoDB CRUD application with JWT Authentication
 
-This Application is a simple CRUD application using python as backend
+This Application is a simple CRUD application using python as backend. It is also gives you the feature of upload and download image using GridFS in Python.
 
 ## Installation Instructions
 
@@ -18,6 +18,7 @@ install python
 install pip
 pip install pipenv
 pipenv shell
+pipenv install
 pipenv run python index.py -m
 ```
 

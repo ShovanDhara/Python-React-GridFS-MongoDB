@@ -1,6 +1,5 @@
 import * as types from './actionTypes';
 import ProductApi from '../api/productApi';
-// import processErrorMsg from './processErrorMsg';
 import { beginAjaxCall, ajaxCallError, ajaxCallSuccess } from './ajaxCallStatusAction';
 import { statusIsError, statusIsSuccess } from './statusAction';
 
@@ -59,6 +58,19 @@ export const createProduct = product => {
         }).catch(error => {
             dispatch(ajaxCallError(error));
             dispatch(productError());
+            dispatch(statusIsError(error));
+        });
+    };
+};
+
+export const createProductImage = imagedata => {
+    return (dispatch) => {
+        dispatch(beginAjaxCall());
+        return ProductApi.createNewProductImage(imagedata).then(response => {
+            dispatch(statusIsSuccess('Image created successfully'));
+            return response  
+        }).catch(error => {
+            dispatch(ajaxCallError(error));
             dispatch(statusIsError(error));
         });
     };

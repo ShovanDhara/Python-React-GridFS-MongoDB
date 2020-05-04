@@ -3,7 +3,7 @@ import ProductView from './product-view';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as productActions from '../actions/productActions';
-import * as userActions from '../actions/userActions';
+// import * as userActions from '../actions/userActions';
 
 class ProductList extends React.Component {
     constructor(props) {
@@ -12,7 +12,7 @@ class ProductList extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.isLoggedIn) {
+        if (window.sessionStorage.getItem('token')) {
             this.props.actions.loadProducts();
         }
     }

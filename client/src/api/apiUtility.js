@@ -1,16 +1,25 @@
 import environment from './environment';
 
-export const requestModifier = (url, methodType, payload) => {
+export const requestModifier = (url, methodType, payload, type) => {
 	const headers = Object.assign({
-		'Content-Type': 'application/json'
+		'content-type': type ? 'multipart/form-data' : 'application/json'
 	}, requestHeaders());
 
-	const request = new Request(`${environment.apiBaseUrl}/${url}`, {
+	if (!type) {
+		const request = new Request(`${environment.apiBaseUrl}/${url}`, {
+			method: methodType,
+			headers: headers,
+			body: payload ? JSON.stringify(payload) : null
+		});
+		return request;
+	}
+	// This request will be returned when to post byte object
+	const fileTypeRequest = new Request(`${environment.apiBaseUrl}/${url}`, {
 		method: methodType,
-		headers: headers,
-		body: payload ? JSON.stringify(payload) : null
+		body: payload
 	});
-	return request;
+	return fileTypeRequest;
+
 }
 
 export const httpService = (data) => {

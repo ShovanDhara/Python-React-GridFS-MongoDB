@@ -12,7 +12,7 @@ product_schema = {
             "type": "string",
         },
         "img_url": {
-            "type": "string",
+            "type": "string"
         },
         "price": {
             "type": "integer",

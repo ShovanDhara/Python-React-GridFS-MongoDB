@@ -18,7 +18,11 @@ class ProductView extends React.Component {
         const { img_url, name, description, price, id } = this.props.product;
         return (
             <div className="card">
-                <img className="card-img-top" src={img_url} alt="Card imagalte cap" />
+                <div className="image-container">
+                    {img_url ? <img className="card-img-top" src={`http://localhost:4000/api/image/${img_url}`} alt="Card imagalte cap" /> :
+                        <span>No Image Added</span>
+                    }
+                </div>
                 <div className="card-body">
                     <h5 className="card-title">{name}</h5>
                     <p className="card-text">{description}</p>

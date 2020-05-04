@@ -10,6 +10,10 @@ class ProductApi {
 		const request = requestModifier('add_product', 'POST', product);
 		return httpService(request);
 	};
+	static createNewProductImage(imagedata) {
+		const request = requestModifier('add_image', 'POST', imagedata, 'file');
+		return httpService(request);
+	};
 	static deleteProduct(product) {
 		const request = requestModifier(`product/${product.id}`, 'DELETE');
 		return httpService(request);

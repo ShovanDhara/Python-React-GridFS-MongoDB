@@ -34,13 +34,24 @@ def find(product_id):
         raise InvalidUsage('Product not found', status_code=404)
 
 
+@product_api.route("/api/image/<image_name>", methods=["GET"])
+def find_image(image_name):
+    current_user = get_jwt_identity()
+    db_query = {'filename': image_name}
+    image_exist = ProductService(current_user).find_image(image_name, db_query)
+    if image_exist:
+        return image_exist
+    else:
+        raise InvalidUsage('Image not found', status_code=404)
+
+
 @product_api.route("/api/add_product", methods=["POST"])
 @jwt_required
 def create():
     current_user = get_jwt_identity()
-    product_repo = validate_product(json.loads(request.data))
-    if product_repo['ok']:
-        data = product_repo['data']
+    valid_repo = validate_product(json.loads(request.data))
+    if valid_repo['ok']:
+        data = valid_repo['data']
         find_product_by_name = {'name': data['name']}
         product_exist = ProductService().find_product(find_product_by_name)
         if product_exist is not None:
@@ -49,7 +60,17 @@ def create():
             saved_product_data = ProductService(current_user).create_new_product(data)
             return json_response({'data': dump(saved_product_data).json})
     else:
-        raise InvalidUsage('Bad request parameters: {}'.format(product_repo['message']), status_code=400)
+        raise InvalidUsage('Bad request parameters: {}'.format(valid_repo['message']), status_code=400)
+
+
+@product_api.route('/api/add_image', methods=['POST'])
+def upload():
+    current_user = get_jwt_identity()
+    image_repo = request.files['file']
+    image_name = image_repo.filename
+    image_data = image_repo
+    saved_product_data = ProductService(current_user).create_new_image(image_name, image_data)
+    return saved_product_data
 
 
 @product_api.route("/api/product/<product_id>", methods=["DELETE"])

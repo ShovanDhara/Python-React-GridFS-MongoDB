@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import * as userActions from '../actions/userActions'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-
 class HeaderComponent extends React.Component {
     constructor(props, context) {
         super(props);
@@ -32,14 +31,14 @@ class HeaderComponent extends React.Component {
                         </button>
                         <div className="collapse navbar-collapse" id="navbarNav">
                             <ul className="navbar-nav">
-                                <li className="nav-item active">
-                                    <Link className="nav-link" to='/productList' >Home</Link>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" activeClassName="active" to='/productList' >Home</NavLink>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to='/add' >Edit/Add</Link>
+                                    <NavLink className="nav-link" activeClassName="active" to='/add' >Edit/Add</NavLink>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to='/about' >About</Link>
+                                    <NavLink className="nav-link" activeClassName="active" to='/about' >About</NavLink>
                                 </li>
                             </ul>
                         </div>
